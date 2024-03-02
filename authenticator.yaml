@@ -1,0 +1,74 @@
+openapi: 3.0.0
+info:
+  title: Authentication System API
+  description: API for user authentication and management
+  version: 1.0.0
+servers:
+  - url: https://api.example.com/v1
+paths:
+  /auth/login:
+    post:
+      summary: Authenticate User
+      description: Validates user credentials and returns an access token if successful.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                password:
+                  type: string
+                  example: password123
+      responses:
+        '200':
+          description: Successful authentication
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    description: JWT access token
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        '401':
+          description: Unauthorized - Invalid credentials
+  /auth/register:
+    post:
+      summary: Register User
+      description: Creates a new user account.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                password:
+                  type: string
+                  example: password123
+      responses:
+        '201':
+          description: User created successfully
+        '400':
+          description: Bad request - Invalid input
+  /auth/delete:
+    delete:
+      summary: Delete User
+      description: Deletes the user account.
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: User deleted successfully
+        '401':
+          description: Unauthorized - Missing or invalid token
