@@ -66,12 +66,15 @@ configuration = openapi_client.Configuration(
 with openapi_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = openapi_client.DefaultApi(api_client)
+    auth_login_post_request = openapi_client.AuthLoginPostRequest() # AuthLoginPostRequest | 
 
     try:
-        # Delete User
-        api_instance.auth_delete_delete()
+        # Authenticate User
+        api_response = api_instance.auth_login_post(auth_login_post_request)
+        print("The response of DefaultApi->auth_login_post:\n")
+        pprint(api_response)
     except ApiException as e:
-        print("Exception when calling DefaultApi->auth_delete_delete: %s\n" % e)
+        print("Exception when calling DefaultApi->auth_login_post: %s\n" % e)
 
 ```
 
@@ -81,9 +84,7 @@ All URIs are relative to *http://localhost:8000*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*DefaultApi* | [**auth_delete_delete**](docs/DefaultApi.md#auth_delete_delete) | **DELETE** /auth/delete | Delete User
 *DefaultApi* | [**auth_login_post**](docs/DefaultApi.md#auth_login_post) | **POST** /auth/login | Authenticate User
-*DefaultApi* | [**auth_register_post**](docs/DefaultApi.md#auth_register_post) | **POST** /auth/register | Register User
 
 
 ## Documentation For Models

@@ -18,24 +18,6 @@ export class PromiseDefaultApi {
     }
 
     /**
-     * Deletes the user account.
-     * Delete User
-     */
-    public authDeleteDeleteWithHttpInfo(_options?: Configuration): Promise<HttpInfo<void>> {
-        const result = this.api.authDeleteDeleteWithHttpInfo(_options);
-        return result.toPromise();
-    }
-
-    /**
-     * Deletes the user account.
-     * Delete User
-     */
-    public authDeleteDelete(_options?: Configuration): Promise<void> {
-        const result = this.api.authDeleteDelete(_options);
-        return result.toPromise();
-    }
-
-    /**
      * Validates user credentials and returns an access token if successful.
      * Authenticate User
      * @param authLoginPostRequest 
@@ -52,26 +34,6 @@ export class PromiseDefaultApi {
      */
     public authLoginPost(authLoginPostRequest: AuthLoginPostRequest, _options?: Configuration): Promise<AuthLoginPost200Response> {
         const result = this.api.authLoginPost(authLoginPostRequest, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Creates a new user account.
-     * Register User
-     * @param authLoginPostRequest 
-     */
-    public authRegisterPostWithHttpInfo(authLoginPostRequest: AuthLoginPostRequest, _options?: Configuration): Promise<HttpInfo<void>> {
-        const result = this.api.authRegisterPostWithHttpInfo(authLoginPostRequest, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Creates a new user account.
-     * Register User
-     * @param authLoginPostRequest 
-     */
-    public authRegisterPost(authLoginPostRequest: AuthLoginPostRequest, _options?: Configuration): Promise<void> {
-        const result = this.api.authRegisterPost(authLoginPostRequest, _options);
         return result.toPromise();
     }
 

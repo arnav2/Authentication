@@ -1,8 +1,8 @@
-export * from './AuthLoginPost200Response';
-export * from './AuthLoginPostRequest';
+export * from '../models/AuthLoginPost200Response';
+export * from '../models/AuthLoginPostRequest';
 
-import { AuthLoginPost200Response } from './AuthLoginPost200Response';
-import { AuthLoginPostRequest } from './AuthLoginPostRequest';
+import { AuthLoginPost200Response } from '../models/AuthLoginPost200Response';
+import { AuthLoginPostRequest } from '../models/AuthLoginPostRequest';
 
 /* tslint:disable:no-unused-variable */
 let primitives = [
