@@ -1,58 +1,35 @@
 import falcon
 from wsgiref import simple_server
-import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../openapi/python_sdk')))
 
-# from backend.resources.AuthLoginResource import AuthLoginResource
-# from backend.resources.AuthRegisterResource import AuthRegisterResource
-# from backend.db.database import Database
+from middlewares.RateLimiterMiddleware import RateLimitMiddleware
 
-# Get the absolute path of the python_sdk directory
-python_sdk_path = os.path.abspath("python_sdk")
+from resources.AuthRegisterResource import AuthRegisterResource
+from resources.AuthLoginResource import AuthLoginResource
+from resources.AuthLogoutResource import AuthLogoutResource
+from resources.AuthDeleteResource import AuthDeleteResource
 
-# Add the python_sdk directory to the Python path
-sys.path.append(python_sdk_path)
+from dotenv import load_dotenv
+load_dotenv(os.path.join(os.path.dirname(__file__), 'db', '.env'))
 
-from openapi.python_sdk.openapi_client.api.default_api import DefaultApi
-from openapi.python_sdk.openapi_client.models import AuthLoginPostRequest, AuthLoginPost200Response
+from db.database import Database
 
-class AuthResource:
-    def __init__(self):
-        self.api = DefaultApi()
+SECRET_KEY = os.getenv('SECRET_KEY')
 
-    def on_post(self, req, resp):
-        # Parse request body
-        login_data = req.media
-        print("login_data: ", login_data)
-        
-        # Create AuthLoginPostRequest object
-        login_request = AuthLoginPostRequest(
-            email=login_data['email'],
-            password=login_data['password']
-        )
+rate_limiter_middleware = RateLimitMiddleware()
+app = falcon.API(middleware=[rate_limiter_middleware])
+db = Database()
 
-        # # Call the auth_login_post function
-        response = self.api.auth_login_post(auth_login_post_request=login_request)
-        # print(response)
-        # # Return appropriate response
-        # if isinstance(response, AuthLoginPost200Response):
-        #     resp.status = falcon.HTTP_200
-        #     resp.media = {"access_token": response.access_token}
-        # else:
-        #     resp.status = falcon.HTTP_400
-        #     resp.media = {"error": "Login failed"}
+register_resource = AuthRegisterResource(db)
+login_resource = AuthLoginResource(db, secret_key=SECRET_KEY)
+logout_resource = AuthLogoutResource(db)
+delete_resource = AuthDeleteResource(db)
 
-# Initialize Falcon application
-app = falcon.App()
-# Add routes
-app.add_route('/auth/login', AuthResource())
+app.add_route('/auth/register', register_resource)
+app.add_route('/auth/login', login_resource)
+app.add_route('/auth/logout', logout_resource)
+app.add_route('/auth/delete', delete_resource)
 
-# Start Falcon server
-if __name__ == '__main__':
-    from wsgiref import simple_server
-    httpd = simple_server.make_server('127.0.0.1', 8000, app)
-    print("Falcon server started on http://127.0.0.1:8000/")
-    httpd.serve_forever()
-    
+httpd = simple_server.make_server('127.0.0.1', 8000, app)
+print(f'Falcon server started on http://localhost:8000/')
+httpd.serve_forever()

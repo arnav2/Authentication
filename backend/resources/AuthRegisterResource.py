@@ -1,58 +1,41 @@
 import falcon
-from falcon.media.validators import jsonschema
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, Boolean
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+import json
+import hashlib
 from datetime import datetime
-from openapi.python_sdk.openapi_client.api.default_api import DefaultApi
-from openapi.python_sdk.openapi_client.models.auth_login_post_request import AuthLoginPostRequest
-from backend.models import User
+from db.models import User
+from falcon_limiter.utils import register
+from middlewares.RateLimiterMiddleware import RateLimitMiddleware
 class AuthRegisterResource:
-    
-    def __init__(self):
-        self.api = DefaultApi()
-    
+    def __init__(self, db):
+        self.db = db
+
+    @register(RateLimitMiddleware.limiter.limit(["10 per hour", "3 per minute"]))
     def on_post(self, req, resp):
-        email = req.media.get('email')
-        password = req.media.get('password')
+        with self.db.Session() as session:
+            data = json.loads(req.stream.read().decode('utf-8'))
+            email = data['email']
+            password = data['password']
 
-        auth_login_post_request = AuthLoginPostRequest(email="test@email.com", password="password123")
-        
-        try:
-            response = self.api.auth_register_post(auth_login_post_request=AuthLoginPostRequest(email="test@email.com", password="password123"))
-        except Exception as e:
-            print(e)
-            resp.status = falcon.HTTP_500
-            resp.media = {'Unexpected Server Error: ': str(e)}
-            return
-
-        if response.status == 201:
-            if store_user_in_database(email, password):
-                resp.status = falcon.HTTP_201
-            else:
+            try:
+                self.register_user(session, resp, email, password)
+            except KeyError as e:
+                resp.status = falcon.HTTP_400
+                resp.body = json.dumps({'error': f'Missing required parameter: {e}'})
+            except Exception as e:
                 resp.status = falcon.HTTP_500
-                resp.media = {'error': 'Failed to store user in the database'}
-        else:
-            resp.status = falcon.HTTP_400
-            resp.media = {'error': 'Registration failed'}
+                resp.body = json.dumps({'error': str(e)})
 
-def store_user_in_database(email: str, password: str):
-    return True
-    # engine = create_engine(DATABASE_URL)
-
-    # Session = sessionmaker(bind=engine)
-    # session = Session()
-    # current_timestamp = datetime.now()
-    # try:
-    #     user = User(
-    #         email=email,
-    #         password=password,
-    #         created_at=current_timestamp
-    #     )
-    #     session.add(user)
-    #     session.commit()
-    #     return True
-    # except Exception as e:
-    #     session.rollback()
-    #     print(f"Error storing user in database: {e}")
-    #     return False
+    def register_user(self, session, resp, email, password):
+        user = session.query(User).filter_by(email=email).first()
+        if user:
+            resp.status = falcon.HTTP_409  # 409 Conflict
+            resp.body = json.dumps({'error': 'Username already exists. Please try logging in'})
+            return
+        
+        hashed_password = hashlib.sha256(password.encode('utf-8')).hexdigest()
+        new_user = User(email=email, password=hashed_password, created_at=datetime.now(), is_active=True)
+        session.add(new_user)
+        session.commit()
+        
+        resp.status = falcon.HTTP_201  # 201 Created
+        resp.body = json.dumps({'message': 'Registration successful'})
