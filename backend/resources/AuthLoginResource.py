@@ -1,7 +1,7 @@
 import falcon
 import jwt
 import json
-from db.models import User
+from db.database import User
 import hashlib
 from falcon_limiter.utils import register
 from middlewares.RateLimiterMiddleware import RateLimitMiddleware
@@ -21,6 +21,7 @@ class AuthLoginResource:
                 hashed_password = hashlib.sha256(password.encode('utf-8')).hexdigest()
                 
                 user = session.query(User).filter_by(email=email).first()
+                
                 if user and user.password == hashed_password:
                     self.set_user_active(session, user)
                     token = self.generate_jwt_token(user)

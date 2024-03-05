@@ -1,7 +1,7 @@
 import falcon
 import json
 
-from db.models import User
+from db.database import User
 
 class AuthLogoutResource:
 
@@ -16,7 +16,7 @@ class AuthLogoutResource:
                 
                 user = session.query(User).filter_by(email=email).first()
                 if user:
-                    self.set_user_inactive(user)
+                    self.set_user_inactive(user, session)
                     resp.status = falcon.HTTP_200
                     resp.body = json.dumps({'message': 'Logout successful'})
                 else:
@@ -25,6 +25,6 @@ class AuthLogoutResource:
             except Exception as e:
                 resp.status = falcon.HTTP_500
                 resp.body = json.dumps({'error': str(e)})
-    def set_user_inactive(self, user: User):
+    def set_user_inactive(self, user: User, session):
         user.is_active = False
-        self.db.Session().commit()
+        session.commit()

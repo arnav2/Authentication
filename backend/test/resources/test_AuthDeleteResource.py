@@ -7,22 +7,21 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
-from db.models import User
-from resources import AuthDeleteResource
+from db.database import User
+from resources.AuthDeleteResource import AuthDeleteResource
 
 class TestAuthDeleteResource(unittest.TestCase):
 
     def setUp(self):
         self.db_mock = MagicMock()
+        self.user_email = 'test@example.com'
+        self.user_password = 'password123'
+        self.user = User(email=self.user_email, password=self.user_password)
+        self.db_mock.Session.return_value.__enter__.return_value.query.return_value.filter_by.return_value.first.return_value = self.user
 
     def test_delete_user_success(self):
-        # Test deleting an existing user
-        user_email = 'test@example.com'
-        user = User(email=user_email)
-        self.db_mock.Session.return_value.__enter__.return_value.query.return_value.filter_by.return_value.first.return_value = user
-
         req = MagicMock()
-        req.stream.read.return_value.decode.return_value = json.dumps({'email': user_email})
+        req.stream.read.return_value.decode.return_value = json.dumps({'email': self.user_email})
         resp = MagicMock()
 
         resource = AuthDeleteResource(self.db_mock)
@@ -33,11 +32,11 @@ class TestAuthDeleteResource(unittest.TestCase):
 
     def test_delete_user_not_found(self):
         # Test deleting a user that does not exist
-        user_email = 'nonexistent@example.com'
+        non_existent_user_email = 'nonexistent@example.com'
         self.db_mock.Session.return_value.__enter__.return_value.query.return_value.filter_by.return_value.first.return_value = None
 
         req = MagicMock()
-        req.stream.read.return_value.decode.return_value = json.dumps({'email': user_email})
+        req.stream.read.return_value.decode.return_value = json.dumps({'email': non_existent_user_email})
         resp = MagicMock()
 
         resource = AuthDeleteResource(self.db_mock)
@@ -55,7 +54,7 @@ class TestAuthDeleteResource(unittest.TestCase):
         resource = AuthDeleteResource(self.db_mock)
         resource.on_post(req, resp)
 
-        self.assertEqual(resp.status, falcon.HTTPBadRequest)
+        self.assertEqual(resp.status, falcon.HTTP_400)
         self.assertIn('Missing email', resp.body)
 
     def test_invalid_json_request_body(self):
@@ -66,19 +65,15 @@ class TestAuthDeleteResource(unittest.TestCase):
 
         resource = AuthDeleteResource(self.db_mock)
         resource.on_post(req, resp)
-
-        self.assertEqual(resp.status, falcon.HTTPBadRequest)
+        self.assertEqual(resp.status, falcon.HTTP_400)
         self.assertIn('Invalid JSON', resp.body)
 
     def test_database_error(self):
         # Test handling database error during user deletion
-        user_email = 'test@example.com'
-        user = User(email=user_email)
-        self.db_mock.Session.return_value.__enter__.return_value.query.return_value.filter_by.return_value.first.return_value = user
         self.db_mock.Session.return_value.__enter__.return_value.commit.side_effect = Exception('Database error')
 
         req = MagicMock()
-        req.stream.read.return_value.decode.return_value = json.dumps({'email': user_email})
+        req.stream.read.return_value.decode.return_value = json.dumps({'email': self.user_email})
         resp = MagicMock()
 
         resource = AuthDeleteResource(self.db_mock)

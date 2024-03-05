@@ -1,33 +1,63 @@
-# Authentication
-Authentication app written in Python and Falcon (backend only). This will be put on a dockerfile and deployed on Kubernetes. It will also consist of a workflow to create both Python and Typescript SDK. 
+# Authentication System
 
-Python SDK will be used by the backend codebase.
-Typescript SDK will be used by the frontend codebase. 
+This authentication system is implemented in Python using the Falcon framework for the backend. It includes functionality for user authentication and will be containerized using Docker and deployed on Kubernetes. Additionally, the system provides workflows to generate both Python and Typescript SDKs.
 
-# Developer Notes
+## Developer Notes
 
-## How to setup 
+### Setup Instructions
 
-brew install openapi-generator
+To build the Docker image for the authentication app:
 
-## To create a python client
+```bash
+docker build -t authentication-app .
+```
 
-Please replace your path for the yaml:
-<!-- TODO: SETUP A PYTHON_POST_PROCESS_FILE -->
-openapi-generator generate -i path/to/authenticator.yaml -g python -o path/to/python-sdk
-openapi-generator generate -i authenticator.yaml -g python -o python_sdk
+To tag the Docker image for pushing to a Docker registry:
 
-openapi-generator generate -i path/to/authenticator.yaml -g typescript -o path/to/typescript-sdk
+```bash
+docker tag authentication-app:latest your-docker-registry/authentication-app:latest
+```
 
-docker run --rm \
-  -v ${PWD}:/local openapitools/openapi-generator-cli generate \
-  -i /local/petstore.yaml \
-  -g go \
-  -o /local/out/go
+To deploy the application on Kubernetes using a deployment YAML file for a specific stage (e.g., ALPHA):
 
-  ### NOTE
-  Adding the path of the folder to the PYTHONPATH for the .bashrc or .bash_profile or .zshrc would help
+For testing install minikube
+```
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-darwin-arm64
+sudo install minikube-darwin-arm64 /usr/local/bin/minikube
+```
 
-  export PYTHONPATH=/path/to/your/directory:$PYTHONPATH
+```bash
+kubectl apply -f deployment_ALPHA.yaml
+```
 
-  In this case we need to add the path to the authentication folder and the path to the SDK folder to the python path
+To check the status of the deployed pods:
+
+```bash
+kubectl get pods
+```
+
+To expose the deployment as a LoadBalancer service:
+
+```bash
+kubectl expose deployment authentication-app --type=LoadBalancer --port=8000
+```
+
+### Developer Note
+
+Adding the path of the folder to the PYTHONPATH environment variable can simplify module imports and execution. You can add the following line to your `.bashrc`, `.bash_profile`, or `.zshrc` file:
+
+```bash
+export PYTHONPATH=/path/to/your/directory:$PYTHONPATH
+```
+
+In this case, you need to add the path to the authentication folder and the path to the SDK folder to the PYTHONPATH. For example:
+
+```bash
+export PYTHONPATH=/path/to/authentication:/path/to/SDK:$PYTHONPATH
+```
+
+Replace `/path/to/your/directory`, `/path/to/authentication`, and `/path/to/SDK` with the actual paths to your directories.
+
+---
+
+This README provides clear instructions for building and deploying the authentication system using Docker and Kubernetes. Additionally, it includes helpful tips for setting up the development environment.

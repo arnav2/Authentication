@@ -1,39 +1,89 @@
 import { ResponseContext, RequestContext, HttpFile, HttpInfo } from '../http/http';
 import { Configuration} from '../configuration'
 
-import { AuthLoginPost200Response } from '../models/AuthLoginPost200Response';
+import { AuthDeletePostRequest } from '../models/AuthDeletePostRequest';
 import { AuthLoginPostRequest } from '../models/AuthLoginPostRequest';
-import { ObservableDefaultApi } from './ObservableAPI';
+import { ObservableAuthenticationApi } from './ObservableAPI';
 
-import { DefaultApiRequestFactory, DefaultApiResponseProcessor} from "../apis/DefaultApi";
-export class PromiseDefaultApi {
-    private api: ObservableDefaultApi
+import { AuthenticationApiRequestFactory, AuthenticationApiResponseProcessor} from "../apis/AuthenticationApi";
+export class PromiseAuthenticationApi {
+    private api: ObservableAuthenticationApi
 
     public constructor(
         configuration: Configuration,
-        requestFactory?: DefaultApiRequestFactory,
-        responseProcessor?: DefaultApiResponseProcessor
+        requestFactory?: AuthenticationApiRequestFactory,
+        responseProcessor?: AuthenticationApiResponseProcessor
     ) {
-        this.api = new ObservableDefaultApi(configuration, requestFactory, responseProcessor);
+        this.api = new ObservableAuthenticationApi(configuration, requestFactory, responseProcessor);
     }
 
     /**
-     * Validates user credentials and returns an access token if successful.
-     * Authenticate User
+     * Delete user endpoint
+     * @param authDeletePostRequest 
+     */
+    public authDeletePostWithHttpInfo(authDeletePostRequest: AuthDeletePostRequest, _options?: Configuration): Promise<HttpInfo<void>> {
+        const result = this.api.authDeletePostWithHttpInfo(authDeletePostRequest, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Delete user endpoint
+     * @param authDeletePostRequest 
+     */
+    public authDeletePost(authDeletePostRequest: AuthDeletePostRequest, _options?: Configuration): Promise<void> {
+        const result = this.api.authDeletePost(authDeletePostRequest, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Login endpoint
      * @param authLoginPostRequest 
      */
-    public authLoginPostWithHttpInfo(authLoginPostRequest: AuthLoginPostRequest, _options?: Configuration): Promise<HttpInfo<AuthLoginPost200Response>> {
+    public authLoginPostWithHttpInfo(authLoginPostRequest: AuthLoginPostRequest, _options?: Configuration): Promise<HttpInfo<void>> {
         const result = this.api.authLoginPostWithHttpInfo(authLoginPostRequest, _options);
         return result.toPromise();
     }
 
     /**
-     * Validates user credentials and returns an access token if successful.
-     * Authenticate User
+     * Login endpoint
      * @param authLoginPostRequest 
      */
-    public authLoginPost(authLoginPostRequest: AuthLoginPostRequest, _options?: Configuration): Promise<AuthLoginPost200Response> {
+    public authLoginPost(authLoginPostRequest: AuthLoginPostRequest, _options?: Configuration): Promise<void> {
         const result = this.api.authLoginPost(authLoginPostRequest, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Logout endpoint
+     */
+    public authLogoutPostWithHttpInfo(_options?: Configuration): Promise<HttpInfo<void>> {
+        const result = this.api.authLogoutPostWithHttpInfo(_options);
+        return result.toPromise();
+    }
+
+    /**
+     * Logout endpoint
+     */
+    public authLogoutPost(_options?: Configuration): Promise<void> {
+        const result = this.api.authLogoutPost(_options);
+        return result.toPromise();
+    }
+
+    /**
+     * Register endpoint
+     * @param authLoginPostRequest 
+     */
+    public authRegisterPostWithHttpInfo(authLoginPostRequest: AuthLoginPostRequest, _options?: Configuration): Promise<HttpInfo<void>> {
+        const result = this.api.authRegisterPostWithHttpInfo(authLoginPostRequest, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Register endpoint
+     * @param authLoginPostRequest 
+     */
+    public authRegisterPost(authLoginPostRequest: AuthLoginPostRequest, _options?: Configuration): Promise<void> {
+        const result = this.api.authRegisterPost(authLoginPostRequest, _options);
         return result.toPromise();
     }
 

@@ -26,24 +26,10 @@ class TestDefaultApi(unittest.TestCase):
     def tearDown(self) -> None:
         pass
 
-    def test_auth_delete_delete(self) -> None:
-        """Test case for auth_delete_delete
-
-        Delete User
-        """
-        pass
-
     def test_auth_login_post(self) -> None:
         """Test case for auth_login_post
 
         Authenticate User
-        """
-        pass
-
-    def test_auth_register_post(self) -> None:
-        """Test case for auth_register_post
-
-        Register User
         """
         pass
 

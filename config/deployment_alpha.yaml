@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: falcon-auth-app-alpha
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: falcon-auth-app-alpha
+  template:
+    metadata:
+      labels:
+        app: falcon-auth-app-alpha
+    spec:
+      containers:
+      - name: falcon-auth-app-alpha
+        image: your-docker-registry/falcon-auth-app:alpha
+        ports:
+        - containerPort: 8000
+        resources:
+          limits:
+            cpu: 750m # 75% of a CPU core
+            memory: 512Mi
+          requests:
+            cpu: 500m
+            memory: 256Mi
+        env:
+        - name: ALHPA_DB_HOST
+          value: "localhost"
+        - name: ALHPA_DB_PORT
+          value: "5432"
+        - name: ALHPA_DB_NAME
+          value: "mydatabase"
+        - name: ALHPA_DB_USER
+          value: "arnavgoel"
+        - name: ALHPA_DB_PASSWORD
+          value: "mypassword"
+        - name: ALPHA_SERVER_NAME
+          value: "localhost"
+        - name: SERVER_PORT
+          value: "8000"

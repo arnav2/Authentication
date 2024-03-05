@@ -1,7 +1,7 @@
 .gitignore
-DefaultApi.md
+AuthenticationApi.md
 README.md
-apis/DefaultApi.ts
+apis/AuthenticationApi.ts
 apis/baseapi.ts
 apis/exception.ts
 auth/auth.ts
@@ -11,7 +11,7 @@ http/http.ts
 http/isomorphic-fetch.ts
 index.ts
 middleware.ts
-models/AuthLoginPost200Response.ts
+models/AuthDeletePostRequest.ts
 models/AuthLoginPostRequest.ts
 models/ObjectSerializer.ts
 models/all.ts

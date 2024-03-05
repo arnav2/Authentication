@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: falcon-auth-app-gamma
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: falcon-auth-app-gamma
+  template:
+    metadata:
+      labels:
+        app: falcon-auth-app-gamma
+    spec:
+      containers:
+      - name: falcon-auth-app-gamma
+        image: your-docker-registry/falcon-auth-app:gamma
+        ports:
+        - containerPort: 8000
+        resources:
+          limits:
+            cpu: 750m # 75% of a CPU core
+            memory: 512Mi
+          requests:
+            cpu: 500m
+            memory: 256Mi
+        env:
+        - name: GAMMA_DB_HOST
+          value: "localhost"
+        - name: GAMMA_DB_PORT
+          value: "5432"
+        - name: GAMMA_DB_NAME
+          value: "dev_database"
+        - name: GAMMA_DB_USER
+          value: "dev_user"
+        - name: GAMMA_DB_PASSWORD
+          value: "dev_password"
+        - name: GAMMA_SERVER_NAME
+          value: "localhost"
+        - name: GAMMA_SERVER_PORT
+          value: "8000"
+        autoscale:
+          enabled: true
+          minReplicas: 3
+          maxReplicas: 10
+          targetCPUUtilizationPercentage: 75
+        metrics:
+          enabled: true
+          path: /metrics
+          port: 8000
+          scheme: HTTP

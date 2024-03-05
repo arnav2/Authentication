@@ -1,33 +1,32 @@
 # openapi_client.DefaultApi
 
-All URIs are relative to *http://localhost:8000*
+All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**auth_login_post**](DefaultApi.md#auth_login_post) | **POST** /auth/login | Authenticate User
+[**hello_get**](DefaultApi.md#hello_get) | **GET** /hello | Get Hello Message
 
 
-# **auth_login_post**
-> AuthLoginPost200Response auth_login_post(auth_login_post_request)
+# **hello_get**
+> HelloGet200Response hello_get()
 
-Authenticate User
+Get Hello Message
 
-Validates user credentials and returns an access token if successful.
+Returns a simple hello message
 
 ### Example
 
 
 ```python
 import openapi_client
-from openapi_client.models.auth_login_post200_response import AuthLoginPost200Response
-from openapi_client.models.auth_login_post_request import AuthLoginPostRequest
+from openapi_client.models.hello_get200_response import HelloGet200Response
 from openapi_client.rest import ApiException
 from pprint import pprint
 
-# Defining the host is optional and defaults to http://localhost:8000
+# Defining the host is optional and defaults to http://localhost
 # See configuration.py for a list of all supported configuration parameters.
 configuration = openapi_client.Configuration(
-    host = "http://localhost:8000"
+    host = "http://localhost"
 )
 
 
@@ -35,29 +34,25 @@ configuration = openapi_client.Configuration(
 with openapi_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = openapi_client.DefaultApi(api_client)
-    auth_login_post_request = openapi_client.AuthLoginPostRequest() # AuthLoginPostRequest | 
 
     try:
-        # Authenticate User
-        api_response = api_instance.auth_login_post(auth_login_post_request)
-        print("The response of DefaultApi->auth_login_post:\n")
+        # Get Hello Message
+        api_response = api_instance.hello_get()
+        print("The response of DefaultApi->hello_get:\n")
         pprint(api_response)
     except Exception as e:
-        print("Exception when calling DefaultApi->auth_login_post: %s\n" % e)
+        print("Exception when calling DefaultApi->hello_get: %s\n" % e)
 ```
 
 
 
 ### Parameters
 
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **auth_login_post_request** | [**AuthLoginPostRequest**](AuthLoginPostRequest.md)|  | 
+This endpoint does not need any parameter.
 
 ### Return type
 
-[**AuthLoginPost200Response**](AuthLoginPost200Response.md)
+[**HelloGet200Response**](HelloGet200Response.md)
 
 ### Authorization
 
@@ -65,15 +60,14 @@ No authorization required
 
 ### HTTP request headers
 
- - **Content-Type**: application/json
+ - **Content-Type**: Not defined
  - **Accept**: application/json
 
 ### HTTP response details
 
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | Successful authentication |  -  |
-**401** | Unauthorized - Invalid credentials |  -  |
+**200** | Successful operation |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

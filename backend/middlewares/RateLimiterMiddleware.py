@@ -1,6 +1,7 @@
 import falcon
 from falcon_limiter import Limiter
-
+import time
+import bisect
 def get_access_route_addr(req, resp, resource, params) -> str:
         return req.access_route[0] if req.access_route else req.remote_addr
 
@@ -33,7 +34,7 @@ class RateLimitMiddleware:
         current_time = time.time()
         
         # Calculate the number of tokens consumed in the current window
-        tokens_consumed = max_requests - (len(limits[1]) - bisect_left(limits[1], current_time))
+        tokens_consumed = max_requests - (len(limits[1]) - bisect.bisect_left(limits[1], current_time))
         
         # Calculate remaining tokens
         remaining_tokens = max_requests - tokens_consumed

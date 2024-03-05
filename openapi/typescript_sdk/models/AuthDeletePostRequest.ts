@@ -12,9 +12,8 @@
 
 import { HttpFile } from '../http/http';
 
-export class AuthLoginPostRequest {
+export class AuthDeletePostRequest {
     'email'?: string;
-    'password'?: string;
 
     static readonly discriminator: string | undefined = undefined;
 
@@ -24,16 +23,10 @@ export class AuthLoginPostRequest {
             "baseName": "email",
             "type": "string",
             "format": "email"
-        },
-        {
-            "name": "password",
-            "baseName": "password",
-            "type": "string",
-            "format": ""
         }    ];
 
     static getAttributeTypeMap() {
-        return AuthLoginPostRequest.attributeTypeMap;
+        return AuthDeletePostRequest.attributeTypeMap;
     }
 
     public constructor() {

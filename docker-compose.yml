@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  falcon-auth-app:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres-db
+    environment:
+      - ALHPA_DB_HOST=postgres-db
+      - ALHPA_DB_PORT=5432
+      - ALHPA_DB_NAME=mydatabase
+      - ALHPA_DB_USER=arnavgoel
+      - ALHPA_DB_PASSWORD=mypassword
+
+  postgres-db:
+    image: postgres
+    restart: unless-stopped
+    container_name: db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=mydatabase
+      - POSTGRES_USER=arnavgoel
+      - POSTGRES_PASSWORD=mypassword

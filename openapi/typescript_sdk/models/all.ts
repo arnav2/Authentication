@@ -1,2 +1,2 @@
-export * from '../models/AuthLoginPost200Response'
+export * from '../models/AuthDeletePostRequest'
 export * from '../models/AuthLoginPostRequest'

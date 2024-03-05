@@ -1,7 +1,7 @@
-export * from '../models/AuthLoginPost200Response';
+export * from '../models/AuthDeletePostRequest';
 export * from '../models/AuthLoginPostRequest';
 
-import { AuthLoginPost200Response } from '../models/AuthLoginPost200Response';
+import { AuthDeletePostRequest } from '../models/AuthDeletePostRequest';
 import { AuthLoginPostRequest } from '../models/AuthLoginPostRequest';
 
 /* tslint:disable:no-unused-variable */
@@ -20,7 +20,7 @@ let enumsMap: Set<string> = new Set<string>([
 ]);
 
 let typeMap: {[index: string]: any} = {
-    "AuthLoginPost200Response": AuthLoginPost200Response,
+    "AuthDeletePostRequest": AuthDeletePostRequest,
     "AuthLoginPostRequest": AuthLoginPostRequest,
 }
 

@@ -1,15 +1,13 @@
 openapi: 3.0.0
 info:
-  title: Authentication System API
-  description: API for user authentication and management
+  title: Authentication API
   version: 1.0.0
-servers:
-  - url: http://localhost:8000/
 paths:
   /auth/login:
     post:
-      summary: Authenticate User
-      description: Validates user credentials and returns an access token if successful.
+      summary: Login endpoint
+      tags:
+        - Authentication
       requestBody:
         required: true
         content:
@@ -20,21 +18,69 @@ paths:
                 email:
                   type: string
                   format: email
-                  example: user@example.com
                 password:
                   type: string
-                  example: password123
+                  minLength: 8
+                  maxLength: 20
       responses:
         '200':
-          description: Successful authentication
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  accessToken:
-                    type: string
-                    description: JWT access token
-                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+          description: Successful login
+        '400':
+          description: Bad request, invalid input
+
+  /auth/register:
+    post:
+      summary: Register endpoint
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  minLength: 8
+                  maxLength: 20
+      responses:
+        '201':
+          description: User registered successfully
+        '400':
+          description: Bad request, invalid input
+
+  /auth/logout:
+    post:
+      summary: Logout endpoint
+      tags:
+        - Authentication
+      responses:
+        '200':
+          description: Successful logout
         '401':
-          description: Unauthorized - Invalid credentials
+          description: Unauthorized
+
+  /auth/delete:
+    post:
+      summary: Delete user endpoint
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        '200':
+          description: User deleted successfully
+        '404':
+          description: User not found
